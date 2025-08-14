@@ -9,7 +9,7 @@
 **NanoPlot** Nanoplot is a plotting tool for long read sequencing data and alignments. For more information, please check its website: https://biocontainers.pro/tools/nanoplot and https://github.com/wdecoster/NanoPlot.
 
 **Flye** <br>
-It was used to perform de novo genome assembly after quality control and trimming the adapters from the raw reads. SPAdes is a de Bruijn graph based assembler, designed and intended for small genomes and can take sequencing data from Illumina and IonTorrent platforms. For more information, please visit the Spades website.
+Flye is a de novo assembler for single molecule sequencing reads, such as those produced by PacBio and Oxford Nanopore Technologies. It is designed for a wide range of datasets, from small bacterial projects to large mammalian-scale assemblies. For more information, please visit https://github.com/mikolmogorov/Flye.
 
 **Prokka** <br>
 It is a software tool to annotate bacterial, archaeal and viral genomes quickly and produce standards-compliant output files. It identifies features of interest in a set of genomic DNA sequences, and labelling them with useful information. For more information, please visit the Prokka website.
