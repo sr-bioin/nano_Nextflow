@@ -11,7 +11,7 @@ nextflow.enable.dsl=2
 params.reads   = "data/*.fastq.gz"
 params.outdir  = "results"
 
-// params.flye_envpath = "/home/shree/anaconda3/envs/flye_env"     // external Flye env
+// params.flye_envpath = "/home/user/anaconda3/envs/flye_env"     // external Flye env
 
 
 // Channels
@@ -98,7 +98,7 @@ process flye_assembly {
     output:
     tuple val(sample_id), path("assembly.fasta"), emit: assembly
 
-    conda '/home/shree/anaconda3/envs/flye_env'
+    conda '/home/user/anaconda3/envs/flye_env'
 
     script:
     """
@@ -210,3 +210,4 @@ workflow.onComplete {
     Annotations: ${params.outdir}/annotations
     """
 }
+
