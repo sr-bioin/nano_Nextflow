@@ -1,4 +1,4 @@
-<h2>Nextflow pipeline for bacterial whole genome sequence analysis </h2>
+<h2>Nextflow pipeline for bacterial whole genome sequence analysis using Nanopore data</h2>
 
 <h3>Software used in the pipeline.</h3>
 
@@ -6,7 +6,7 @@
 
 **MultiQC** is used create a single report with interactive plots for multiple bioinformatics analyses across many samples. It reports can describe multiple analysis steps and large numbers of samples within a single plot, and multiple analysis tools making it ideal for routine fast quality control. For more information, please visit the MultiQC website.
 
-**NanoPlot** .
+**NanoPlot** Nanoplot is a plotting tool for long read sequencing data and alignments. For more information, please check its website: https://biocontainers.pro/tools/nanoplot and https://github.com/wdecoster/NanoPlot.
 
 **Flye** <br>
 It was used to perform de novo genome assembly after quality control and trimming the adapters from the raw reads. SPAdes is a de Bruijn graph based assembler, designed and intended for small genomes and can take sequencing data from Illumina and IonTorrent platforms. For more information, please visit the Spades website.
