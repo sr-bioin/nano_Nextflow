@@ -11,9 +11,6 @@ nextflow.enable.dsl=2
 params.reads   = "data/*.fastq.gz"
 params.outdir  = "results"
 
-// params.flye_envpath = "/home/user/anaconda3/envs/flye_env"     // external Flye env
-
-
 // Channels
 Channel.fromPath(params.reads)
        .map { file -> tuple(file.baseName.replaceAll(/\.fastq.*/, ""), file) }
@@ -30,10 +27,10 @@ process fastqc {
     tuple val(sample_id), path(reads)
 
     output:
-    tuple val(sample_id), path("*.{html,zip}"), emit: reports
-
-   // conda 'bioconda::fastqc=0.12.1'
-
+	path("*.{html,zip}"), emit: reports  // Combined output
+    path("*.html"), emit: html           // Separate HTML output
+    path("*.zip"), emit: zip             // Separate ZIP output
+	
     script:
     """
     fastqc -t ${task.cpus} ${reads}
@@ -53,8 +50,6 @@ process nanoplot {
     output:
     path("NanoPlot-report.html"), emit: report
 
-   // conda 'bioconda::nanoplot=1.41.6'
-
     script:
     """
     NanoPlot --fastq ${reads} --maxlength 40000 --plots kde --legacy kde --no_static --outdir nanoplot_${sample_id}
@@ -65,25 +60,26 @@ process nanoplot {
 // ==========================
 // 3. MultiQC
 // ==========================
+
+//Multiqc analysis
 process multiqc {
-    tag "multiqc"
     publishDir "${params.outdir}/multiqc", mode: 'copy'
-
+    
     input:
-    path(fastqc_reports)
-
+    path fastqc_reports
+    
     output:
     path("multiqc_report.html"), emit: report
-
-  //  conda 'bioconda::multiqc=1.14'
-
+    
     script:
     """
     mkdir -p fastqc_reports
-    cp ${fastqc_reports}/* fastqc_reports/ 2>/dev/null || :
+    cp *.html *.zip fastqc_reports/ 2>/dev/null || :
     multiqc fastqc_reports/ -n multiqc_report.html
     """
 }
+
+
 
 // ==========================
 // 4. Flye assembly
@@ -98,11 +94,11 @@ process flye_assembly {
     output:
     tuple val(sample_id), path("assembly.fasta"), emit: assembly
 
-    conda '/home/user/anaconda3/envs/flye_env'
+    conda '/home/usr/anaconda3/envs/flye_env'
 
     script:
     """
-    flye --nano-raw ${reads} --genome-size 2.2m --plasmids -o flye_${sample_id} --threads ${task.cpus}
+    flye --nano-raw ${reads} --genome-size 2.2m --asm-coverage 100 -o flye_${sample_id} --threads ${task.cpus}
     cp flye_${sample_id}/assembly.fasta .
     """
 }
@@ -119,8 +115,6 @@ process quast {
 
     output:
     path("quast_results/report.html"), emit: report
-
-   // conda 'bioconda::quast=5.2.0'
 
     script:
     """
@@ -141,7 +135,8 @@ process prokka {
     output:
     tuple val(sample_id), path("prokka_output/*"), emit: annotation
 
-  //  conda 'bioconda::prokka=1.14.6'
+    // activate conda environment
+    conda '/home/usr/anaconda3/envs/prokka'
 
     script:
     """
@@ -162,7 +157,8 @@ process abricate {
     output:
     path("*.tab"), emit: results
 
-  //  conda 'bioconda::abricate=1.0.1'
+    // activate conda environment
+    conda '/home/usr/anaconda3/envs/abricate'
 
     script:
     """
@@ -210,4 +206,3 @@ workflow.onComplete {
     Annotations: ${params.outdir}/annotations
     """
 }
-
